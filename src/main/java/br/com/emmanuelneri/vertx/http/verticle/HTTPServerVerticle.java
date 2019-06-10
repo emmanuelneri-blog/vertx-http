@@ -6,15 +6,20 @@ import br.com.emmanuelneri.vertx.http.web.FailureHandler;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 import io.vertx.core.http.HttpServer;
+import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.web.Router;
-import io.vertx.ext.web.handler.ErrorHandler;
-
 
 public class HTTPServerVerticle extends AbstractVerticle {
 
     private final Logger LOGGER = LoggerFactory.getLogger(HTTPServerVerticle.class);
+
+    private final JsonObject configuration;
+
+    public HTTPServerVerticle(final JsonObject configuration) {
+        this.configuration = configuration;
+    }
 
     @Override
     public void start(final Future<Void> startFuture) {
@@ -25,10 +30,12 @@ public class HTTPServerVerticle extends AbstractVerticle {
         router.get("/").handler(DefaultRouting.welcome()).failureHandler(failureHandler);
         router.get("/companies").handler(CompanyRouting.findAll()).failureHandler(failureHandler);
 
+        final Integer port = getServerPort();
+
         httpServer.requestHandler(router)
-                .listen(8080,  listenHandler -> {
+                .listen(port, listenHandler -> {
                     if (listenHandler.succeeded()) {
-                        LOGGER.info("HTTP Server started on port: 8080");
+                        LOGGER.info("HTTP Server started on port " + port);
                         startFuture.complete();
                     }
                     if(listenHandler.failed()) {
@@ -36,5 +43,9 @@ public class HTTPServerVerticle extends AbstractVerticle {
                     }
                 });
 
+    }
+
+    private Integer getServerPort() {
+        return configuration.getInteger("server.port");
     }
 }

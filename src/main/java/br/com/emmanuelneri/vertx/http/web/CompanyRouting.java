@@ -7,7 +7,6 @@ import io.vertx.ext.web.RoutingContext;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public final class CompanyRouting {
 
@@ -16,8 +15,8 @@ public final class CompanyRouting {
     public static Handler<RoutingContext> findAll() {
         return routingContext -> {
             final List<Company> companies = new ArrayList<>();
-            companies.add(new Company(new Random().nextLong(), "Company 1"));
-            companies.add(new Company(new Random().nextLong(), "Company 2"));
+            companies.add(new Company(1L, "Company 1"));
+            companies.add(new Company(2L, "Company 2"));
 
             routingContext.response().end(Json.encode(companies));
         };
