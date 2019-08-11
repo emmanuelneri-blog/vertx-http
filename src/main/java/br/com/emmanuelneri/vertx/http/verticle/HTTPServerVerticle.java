@@ -31,18 +31,14 @@ public class HTTPServerVerticle extends AbstractVerticle {
         router.get("/companies").handler(CompanyRouting.findAll()).failureHandler(failureHandler);
 
         final Integer port = getServerPort();
-
         httpServer.requestHandler(router)
                 .listen(port, listenHandler -> {
-                    if (listenHandler.succeeded()) {
-                        LOGGER.info("HTTP Server started on port " + port);
-                        startFuture.complete();
-                    }
                     if(listenHandler.failed()) {
-                        startFuture.fail(listenHandler.cause());
+                        LOGGER.error("HTTP Server error", listenHandler.cause());
+                        return;
                     }
+                    LOGGER.info("HTTP Server started on port " + port);
                 });
-
     }
 
     private Integer getServerPort() {
