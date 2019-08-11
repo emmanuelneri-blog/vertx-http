@@ -7,7 +7,7 @@ import io.vertx.config.ConfigStoreOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 
-public class Main {
+public class Application {
 
     public static void main(String[] args) {
         final Vertx vertx = Vertx.vertx();
